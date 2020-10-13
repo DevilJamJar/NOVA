@@ -299,7 +299,7 @@ class Fun(commands.Cog):
         """Show the top headlines in the U.S. for today. Enter a number (0-15) to show a certain result. """
         url = f'https://newsapi.org/v2/top-headlines?country=us&apiKey={news_key}'
         # I could get a lot more results than 15 articles but it updates everyday and the results are always different
-        # I had to put a reasonable limit on the index for the index was always in range to avoid errors.
+        # I had to put a reasonable limit on the index so the index was always in range to avoid errors.
         sort = range(-1, 16)
         if result not in sort:
             return await ctx.send('<:redx:732660210132451369> This is not a valid search index. Please choose a number '
@@ -328,6 +328,37 @@ class Fun(commands.Cog):
                         embed.set_author(name=a['author'])
                         embed.set_image(url=a['urlToImage'])
                         return await ctx.send(embed=embed)
+
+    @commands.command()
+    async def chat(self, ctx, *, message):
+        """Chat with an AI."""
+        url = f'https://some-random-api.ml/chatbot?message={message}'
+        async with aiohttp.ClientSession() as cs, ctx.typing():
+            async with cs.get(url) as resp:
+                if resp.status != 200:
+                    return await ctx.send("<:redx:732660210132451369> Looks like there was an error and you won't be "
+                                          "able to chat today :/")
+                js = await resp.json()
+                await ctx.send(js['response'])
+
+    @commands.command()
+    async def lyrics(self, ctx, *, song):
+        """Find song lyrics."""
+        url = f'https://some-random-api.ml/lyrics?title={song}'
+        async with aiohttp.ClientSession() as cs, ctx.typing():
+            async with cs.get(url) as resp:
+                if resp.status != 200:
+                    return await ctx.send("<:redx:732660210132451369> Could not find any lyrics for that song.")
+                js = await resp.json()
+                thumbnail = js['thumbnail']
+                links = js['links']
+                embed = discord.Embed(title=js['title'], color=0x5643fd, timestamp=ctx.message.created_at,
+                                      description=f"{js['lyrics'][:1000]}\n\nFind the full lyrics on genius.com "
+                                                  f"[here.]({links['genius']})")
+                embed.set_thumbnail(url=thumbnail['genius'])
+                embed.set_author(name=f"By: {js['author']}")
+
+                await ctx.send(embed=embed)
 
 
 def setup(client):
