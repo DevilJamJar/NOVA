@@ -79,10 +79,47 @@ class Moderation(commands.Cog):
     async def poll(self, ctx, *, msg):
         """Use NOVA to hold an organized vote"""
         embed = discord.Embed(title=f'New Poll', color=0x5643fd, description=msg, timestamp=ctx.message.created_at)
+        embed.set_thumbnail(url='https://imgur.com/ES5SD0L.png')
         embed.set_footer(icon_url=ctx.message.author.avatar_url, text=ctx.message.author)
         poll = await ctx.send(embed=embed)
         for i in ["⬆️", "⬇️"]:
             await poll.add_reaction(i)
+
+    @commands.command()
+    @commands.has_permissions(ban_members=True)
+    @commands.bot_has_guild_permissions(manage_channels=True, manage_roles=True)
+    async def mute(self, ctx, user: discord.Member = None, *, reason):
+        guild = ctx.guild
+        muted = await ctx.guild.create_role(name="Muted", reason="To use for muting")
+        role = discord.utils.get(ctx.guild.roles, name="Muted")
+        mute = discord.utils.get(ctx.guild.text_channels,
+                                 name="muted")
+        if not role:
+            try:
+                for channel in ctx.guild.channels:
+                    await channel.set_permissions(muted, send_messages=False,
+                                                  read_message_history=False,
+                                                  read_messages=False)
+            except discord.Forbidden:
+                return await ctx.send("<:redx:732660210132451369> I have no permissions to make a muted role")
+            await user.remove_roles(atomic=True)
+            await user.add_roles(muted)
+            await ctx.send(f"<a:a_check:742966013930373151> {user.mention} has been sent to #muted for ``{reason}``")
+        else:
+            await user.add_roles(role)
+            await ctx.send(f"<a:a_check:742966013930373151> {user.mention} has been sent to #muted for ``{reason}``")
+
+        if not mute:
+            overwrites = {ctx.guild.default_role: discord.PermissionOverwrite(read_message_history=False),
+                          ctx.guild.me: discord.PermissionOverwrite(send_messages=True),
+                          muted: discord.PermissionOverwrite(read_message_history=True)}
+            try:
+                channel = await guild.create_text_channel('muted', overwrites=overwrites)
+                await channel.send(
+                    f"Welcome to #muted... You will spend your time here until you get unmuted. "
+                    f"Enjoy the silence.")
+            except discord.Forbidden:
+                return await ctx.send("<:redx:732660210132451369> I have no permissions to make #muted")
 
 
 def setup(client):

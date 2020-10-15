@@ -67,6 +67,42 @@ class Fun(commands.Cog):
                                                                f"py)").set_image(
                     url=js[0]['url']).set_footer(text='https://api.thecatapi.com/v1/images/search'))
 
+    @commands.command()
+    async def panda(self, ctx):
+        """Cute panda images."""
+        async with aiohttp.ClientSession() as cs:
+            async with cs.get("https://some-random-api.ml/img/panda") as resp:
+                if resp.status != 200:
+                    return await ctx.send('<:RedX:707949835960975411> No panda found.')
+                js = await resp.json()
+                embed = discord.Embed(color=0x5643fd, timestamp=ctx.message.created_at)
+                embed.set_image(url=js['link'])
+                await ctx.send(embed=embed)
+
+    @commands.command(aliases=['birb'])
+    async def bird(self, ctx):
+        """Cute birb images."""
+        async with aiohttp.ClientSession() as cs:
+            async with cs.get("https://some-random-api.ml/img/birb") as resp:
+                if resp.status != 200:
+                    return await ctx.send('<:RedX:707949835960975411> No birb found.')
+                js = await resp.json()
+                embed = discord.Embed(color=0x5643fd, timestamp=ctx.message.created_at)
+                embed.set_image(url=js['link'])
+                await ctx.send(embed=embed)
+
+    @commands.command()
+    async def fox(self, ctx):
+        """Cute fox images."""
+        async with aiohttp.ClientSession() as cs:
+            async with cs.get("https://some-random-api.ml/img/fox") as resp:
+                if resp.status != 200:
+                    return await ctx.send('<:RedX:707949835960975411> No fox found.')
+                js = await resp.json()
+                embed = discord.Embed(color=0x5643fd, timestamp=ctx.message.created_at)
+                embed.set_image(url=js['link'])
+                await ctx.send(embed=embed)
+
     @commands.group(invoke_without_command=True, aliases=['astronomy'])
     async def apod(self, ctx):
         # APOD command group
@@ -219,6 +255,7 @@ class Fun(commands.Cog):
     async def hex(self, ctx, code):
         """Explore hex colors"""
         color = discord.Colour(int(code, 16))
+        thumbnail = f'https://some-random-api.ml/canvas/colorviewer?hex={code}'
         async with aiohttp.ClientSession() as cs, ctx.typing():
             async with cs.get(f"https://www.thecolorapi.com/id?hex={code}") \
                     as resp:
@@ -235,6 +272,7 @@ class Fun(commands.Cog):
                     xyz = js['XYZ']
                     embed = discord.Embed(title=f"Showing hex code ``#{code}``", color=color,
                                           timestamp=ctx.message.created_at)
+                    embed.set_thumbnail(url=thumbnail)
                     embed.add_field(name='Name', value=f"{name['value']}")
                     embed.add_field(name='Exact name?', value=f"``{name['exact_match_name']}``")
                     embed.add_field(name='Closest named hex', value=f"``{name['closest_named_hex']}``")
@@ -337,7 +375,7 @@ class Fun(commands.Cog):
             async with cs.get(url) as resp:
                 if resp.status != 200:
                     return await ctx.send("<:redx:732660210132451369> Looks like there was an error and you won't be "
-                                          "able to chat today :/")
+                                          "able to chat today.")
                 js = await resp.json()
                 await ctx.send(js['response'])
 
@@ -353,8 +391,8 @@ class Fun(commands.Cog):
                 thumbnail = js['thumbnail']
                 links = js['links']
                 embed = discord.Embed(title=js['title'], color=0x5643fd, timestamp=ctx.message.created_at,
-                                      description=f"{js['lyrics'][:1000]}\n\nFind the full lyrics on genius.com "
-                                                  f"[here.]({links['genius']})")
+                                      description=f"*[Find the full lyrics on genius.com"
+                                                  f"]({links['genius']})*\n\n{js['lyrics'][:1000]}")
                 embed.set_thumbnail(url=thumbnail['genius'])
                 embed.set_author(name=f"By: {js['author']}")
 

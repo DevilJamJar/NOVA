@@ -1,5 +1,6 @@
 /venv
 prefixes.json
 secrets.py
+nohup.out
 __pycache__/
 .idea/

@@ -6,7 +6,7 @@ from discord.ext import commands, tasks
 from itertools import cycle
 
 prefix = ['n.', 'N.']
-intents = discord.Intents.default()
+intents = discord.Intents.all()
 intents.members = True
 client = commands.Bot(command_prefix=prefix, case_insensitive=True, intents=intents)
 client.remove_command('help')
@@ -17,8 +17,10 @@ async def on_ready():
     print('NOVA is online')
     await client.change_presence(activity=discord.Game('n.help'))
 
-errorurl = 'https://media.discordapp.net/attachments/726475732569555014/745738546660245664/vsPV_ipxVKfJKE3xJGvJZeXwrxKUqqkJGBFdIgwpWWE3X7CIJrZ6kElRSJ4Mdvw5cC7wMPYLTKFNnBBv-2K4WP344DoO6Al7RQB4.png'
+errorurl = 'https://media.discordapp.net/attachments/726475732569555014/745738546660245664/vsPV_ipxVKfJKE3xJGvJZeX' \
+           'wrxKUqqkJGBFdIgwpWWE3X7CIJrZ6kElRSJ4Mdvw5cC7wMPYLTKFNnBBv-2K4WP344DoO6Al7RQB4.png'
 errorcolor = 0xFF0000
+
 
 @client.event
 async def on_command_error(ctx, error):
