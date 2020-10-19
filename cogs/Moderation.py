@@ -65,15 +65,17 @@ class Moderation(commands.Cog):
     @commands.bot_has_guild_permissions(manage_channels=True)
     async def slowmode(self, ctx, seconds: int = 10):
         """Set the slowmode for a channel"""
-        await ctx.channel.edit(slowmode_delay=seconds)
+        if 0 < seconds < 21601:
+            await ctx.channel.edit(slowmode_delay=seconds)
+            return await ctx.send(f"<a:a_check:742966013930373151> "
+                                  f"Slowmode for <#{ctx.channel.id}> has been set to ``{seconds}`` seconds."
+                                  f"\nDo ``n.slowmode 0`` to remove slowmode!")
         if seconds == 0:
-            await ctx.send(f"<a:a_check:742966013930373151> "
-                           f"Slowmode for <#{ctx.channel.id}> has been removed.")
-            return
-        else:
-            await ctx.send(f"<a:a_check:742966013930373151> "
-                           f"Slowmode for <#{ctx.channel.id}> has been set to ``{seconds}`` seconds."
-                           f"\nDo ``n.slowmode 0`` to remove slowmode!")
+            return await ctx.send(f"<a:a_check:742966013930373151> "
+                                  f"Slowmode for <#{ctx.channel.id}> has been removed.")
+        if seconds > 21600:
+            return await ctx.send(f"<:redx:732660210132451369> That is not a valid option for slowmode. Please choose a"
+                                  f"number between ``0`` and ``21,600`` to enable slowmode.")
 
     @commands.command(aliases=['suggest', 'vote'])
     async def poll(self, ctx, *, msg):
@@ -120,6 +122,35 @@ class Moderation(commands.Cog):
                     f"Enjoy the silence.")
             except discord.Forbidden:
                 return await ctx.send("<:redx:732660210132451369> I have no permissions to make #muted")
+
+    @commands.group(invoke_without_command=True, aliases=['config'])
+    async def configure(self, ctx):
+        """Configure your server to use some of NOVA's more complex moderation features."""
+        embed = discord.Embed(color=0x5643fd, title='🛠️ Configuration Options 🛠️', timestamp=ctx.message.created_at)
+        embed.add_field(name='``n.configure mute``', value='Adds a #muted channel and a muted role to your '
+                                                           'server. Do n.mute [member] [reason] in order to mute '
+                                                           'someone and remove '
+                                                           'their permissions to send messages.', inline=False)
+        embed.add_field(name='``n.configure modmail``', value='Adds a #modmail channel and allows users to '
+                                                              'have interactions with the server staff in a private '
+                                                              'area.',
+                        inline=False)
+        embed.set_thumbnail(url='https://imgur.com/uMhz173.png')
+        await ctx.send(embed=embed)
+
+    @configure.command()
+    @commands.has_permissions(administrator=True)
+    @commands.bot_has_guild_permissions(manage_channels=True)
+    async def modmail(self, ctx):
+        """Use this command to set up modmail for your server."""
+        await ctx.send('Work in progress, stay tuned.')
+
+    @configure.command()
+    @commands.has_permissions(administrator=True)
+    @commands.bot_has_guild_permissions(manage_channels=True, manage_roles=True)
+    async def mute(self, ctx):
+        """Use this command to set up the mute command for your server."""
+        await ctx.send('Work in progress, stay tuned.')
 
 
 def setup(client):

@@ -1,5 +1,6 @@
 import discord
 import aiohttp
+from secrets import *
 from discord.ext import commands
 
 

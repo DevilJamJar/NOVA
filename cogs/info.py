@@ -18,7 +18,7 @@ class Info(commands.Cog):
         """See the profile picture for a user"""
         member = member or ctx.message.author
         embed = discord.Embed(
-            color=0x5643fd, title=f"Here is {member}'s avatar")
+            color=0x5643fd, title=f"{member}", timestamp=ctx.message.created_at)
         url = str(member.avatar_url).replace(".webp", ".png")
         embed.set_image(url=url)
         await ctx.send(embed=embed)

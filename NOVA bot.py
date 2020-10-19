@@ -5,7 +5,7 @@ from secrets import token
 from discord.ext import commands, tasks
 from itertools import cycle
 
-prefix = ['n.', 'N.']
+prefix = ['n.', 'N.', 'n. ', 'N. ']
 intents = discord.Intents.all()
 intents.members = True
 client = commands.Bot(command_prefix=prefix, case_insensitive=True, intents=intents)
@@ -57,8 +57,8 @@ async def on_command_error(ctx, error):
         await ctx.send(embed=embed)
         
     if isinstance(error, commands.MissingPermissions):
-        await ctx.send(f'⚠ You are not allowed to use this command. You must have ``{error.missing_perms}`` '
-                       f'permissions in order to do so.')
+        await ctx.send(f"⚠ You are not allowed to use this command. You must have ``{error.missing_perms}`` "
+                       f"permissions in order to do so.")
         
     if isinstance(error, commands.UserNotFound):
         embed = discord.Embed(title='Warning!', color=errorcolor, timestamp=ctx.message.created_at,
