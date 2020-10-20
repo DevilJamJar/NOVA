@@ -81,9 +81,9 @@ class Miscellaneous(commands.Cog):
                 return
             else:
                 embed = discord.Embed(title='Warning! That number is too large.', color=0xFF0000,
-                                      description='The maximum amount of seconds if 300.',
+                                      description='The maximum amount of seconds is 300.',
                                       timestamp=ctx.message.created_at)
-                embed.set_thumbnail(url='https://imgur.com/uafPEpb')
+                embed.set_thumbnail(url='https://imgur.com/uafPEpb.png')
                 await ctx.send(embed=embed)
         except commands.CommandOnCooldown:
             embed = discord.Embed(title='This command is on cooldown!', color=0xFF0000,

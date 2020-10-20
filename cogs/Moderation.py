@@ -71,6 +71,7 @@ class Moderation(commands.Cog):
                                   f"Slowmode for <#{ctx.channel.id}> has been set to ``{seconds}`` seconds."
                                   f"\nDo ``n.slowmode 0`` to remove slowmode!")
         if seconds == 0:
+            await ctx.channel.edit(slowmode_delay=0)
             return await ctx.send(f"<a:a_check:742966013930373151> "
                                   f"Slowmode for <#{ctx.channel.id}> has been removed.")
         if seconds > 21600:
