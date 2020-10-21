@@ -74,8 +74,8 @@ class Help(commands.Cog):
                                                   f"\n\n" + "\n".join(k))
                 embed.add_field(name='Like what you see?',  inline=False,
                                 value='<:share:730823872265584680>[Invite NOVA]'
-                                      '(https://discord.com/oauth2/authorize?client_id=7099228509534'
-                                      '94598&permissions=470150214&scope=bot)\n'
+                                      '(https://discord.com/api/oauth2/authorize?client_id=709922850953494598&permis'
+                                      'sions=1573252215&scope=bot)\n'
                                       '<:share:730823872265584680>[Join the support server]'
                                       '(https://discord.gg/Uqh9NXY)\n<:share:730823872265584680>[View the source code]'
                                       '(https://github.com/YeetVegetabales/NOVA/tree/master/cogs)')

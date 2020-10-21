@@ -20,10 +20,9 @@ class Miscellaneous(commands.Cog):
     async def invite(self, ctx):
         """Invite NOVA to your own server"""
         embed = discord.Embed(title='Invite links for NOVA',
-                              description='[<:news:730866149109137520> Required Permissions](https://discord.com/oauth2'
-                                          '/'
-                                          'authorize?client'
-                                          '_id=709922850953494598&permissions=470150214&scope=bot)\n'
+                              description='[<:news:730866149109137520> Required Permissions](https://discord.com/api/'
+                                          'oauth2/authorize?client_id=709922850953494598&permissions=1573252215&scope='
+                                          'bot)\n'
                                           '[<:news:730866149109137520> No Permissions]'
                                           '(https://discord.com/api/oauth2/authorize?client_id=709922850953494598&permi'
                                           'ssions=0&scope=bot)\n[<:news:730866149109137520> All Permissions (admin)]'
@@ -78,6 +77,7 @@ class Miscellaneous(commands.Cog):
                     continue
                 embed.description = f"Timer Complete\nSuccessfully counted down from **{seconds}**"
                 await msg.edit(embed=embed)
+                await ctx.send(f"<a:a_check:742966013930373151> {ctx.message.author.mention} your timer is complete!")
                 return
             else:
                 embed = discord.Embed(title='Warning! That number is too large.', color=0xFF0000,
@@ -93,7 +93,7 @@ class Miscellaneous(commands.Cog):
     @commands.command()
     async def ping(self, ctx):
         """Calculate bot latency"""
-        ping = round(self.client.latency, 5)
+        ping = round(self.client.latency, 2)
         await ctx.send(f"<a:loading:743537226503421973> ``{ping * 1000} milliseconds`` <a:loading:743537226503421973>")
 
 

@@ -200,16 +200,17 @@ class Fun(commands.Cog):
                                                       description='Valid sorts are ``easy``, ``medium``, and ``hard``.',
                                                       color=0xFF0000))
         answers = question.responses
+        d = difficulty.capitalize()
         random.shuffle(answers)
         final_answers = '\n'.join([f"{index}. {value}" for index, value in enumerate(answers, 1)])
-        message = await ctx.send(embed=discord.Embed(
+        await ctx.send(embed=discord.Embed(
             title=f"{question.question}", description=f"\n{final_answers}\n\nQuestion about: **{question.category}"
-                                                      f"**\nDifficulty: **{difficulty}**",
+                                                      f"**\nDifficulty: **{d}**",
             color=0x5643fd))
         answer = answers.index(question.answer) + 1
         try:
             while True:
-                msg = await self.client.wait_for('message', timeout=15, check=lambda m: m.id != message.id)
+                msg = await self.client.wait_for('message', timeout=15, check=lambda m: m.channel == ctx.channel)
                 if str(answer) in msg.content:
                     return await ctx.send(embed=discord.Embed(description=f"{answer} was correct ({question.answer})",
                                                               color=0x32CD32, title='Correct!'))
@@ -361,6 +362,23 @@ class Fun(commands.Cog):
                 embed.set_thumbnail(url=thumbnail['genius'])
                 embed.set_author(name=f"By: {js['author']}")
 
+                await ctx.send(embed=embed)
+
+    @commands.command(aliases=['thispersondoesnotexist'])
+    async def person(self, ctx):
+        """This person does not exist."""
+        async with aiohttp.ClientSession() as cs, ctx.typing():
+            async with cs.get('https://fakeface.rest/face/json') as resp:
+                if resp.status != 200:
+                    return await ctx.send("<:redx:732660210132451369> Could not find you a person.")
+                js = await resp.json()
+                gender = js['gender'].capitalize()
+                embed = discord.Embed(title='This person does not exist.', timestamp=ctx.message.created_at,
+                                      color=0x5643fd)
+                embed.set_image(url=js['image_url'])
+                embed.add_field(name='Age', value=js['age'], inline=True)
+                embed.add_field(name='Gender', value=gender, inline=True)
+                embed.set_footer(text=f"Source: {js['source']}")
                 await ctx.send(embed=embed)
 
 

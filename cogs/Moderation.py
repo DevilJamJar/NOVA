@@ -84,9 +84,9 @@ class Moderation(commands.Cog):
         embed = discord.Embed(title=f'New Poll', color=0x5643fd, description=msg, timestamp=ctx.message.created_at)
         embed.set_thumbnail(url='https://imgur.com/ES5SD0L.png')
         embed.set_footer(icon_url=ctx.message.author.avatar_url, text=ctx.message.author)
-        poll = await ctx.send(embed=embed)
+        message = await ctx.send(embed=embed)
         for i in ["⬆️", "⬇️"]:
-            await poll.add_reaction(i)
+            await message.add_reaction(i)
 
     @commands.command()
     @commands.has_permissions(ban_members=True)

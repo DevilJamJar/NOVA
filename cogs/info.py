@@ -73,17 +73,33 @@ class Info(commands.Cog):
         secret_member = Secret()
         secret_member.id = 0
         secret_member.roles = [guild.default_role]
+        region = str(guild.region)
+        r = region.capitalize()
+        emojis = [emoji for emoji in guild.emojis]
+        channels = [channel for channel in guild.channels]
+        vc = [voice_channel for voice_channel in guild.voice_channels]
+        folders = [category for category in guild.categories]
+        bots = len([bot for bot in guild.members if bot.bot])
 
-        e = discord.Embed(title=f'Server Info  -  {guild.name}', color=0x5643fd, timestamp=ctx.message.created_at)
-        e.add_field(name='ID', value=guild.id, inline=False)
-        e.add_field(name='Owner', value=guild.owner.mention, inline=False)
+        e = discord.Embed(title=f'<:Discord:735530547992068146> '
+                                f'  Server Info  -  {guild.name}', color=0x5643fd, timestamp=ctx.message.created_at,
+                          description=guild.description)
+        e.add_field(name='ID', value=f"<:author:734991429843157042> ``{guild.id}``", inline=False)
+        e.add_field(name='Owner', value=f"<:owner:730864906429136907>``{guild.owner}``", inline=False)
+        e.add_field(name='Region', value=f"📌 ``{r}``", inline=False)
         if guild.icon:
             e.set_thumbnail(url=guild.icon_url)
-        e.add_field(name='Roles', value=
-        ', '.join([role.mention for role in roles[::-1][:10]]) if len(roles) < 10 else len(roles))
-        e.add_field(name='Members', value=guild.member_count,
+        e.add_field(name='Members', value=f"<:member:731190477927219231> ``{guild.member_count}`` **•**"
+                                          f"   <:bot:703728026512392312> ``{bots}``",
                     inline=False)
-        e.add_field(name='Server Created', inline=False, value=guild.created_at.strftime('%a, %B %d %Y, %I:%M %p UTC'))
+        e.add_field(name='Roles', value=f'<:roles:734232012730138744> ``{len(roles)}``', inline=False)
+        e.add_field(name='Emojis', value=f"<:emoji:734231060069613638> ``{len(emojis)}``", inline=False)
+        e.add_field(name='Channels', value=f"<:category:716057680548200468> ``{len(folders)}`` **•** "
+                                           f"<:text_channel:703726554018086912> ``{len(channels)}`` **•** "
+                                           f"<:voice_channel:703726554068418560> ``{len(vc)}``")
+        e.add_field(name='Server Created', inline=False,
+                    value=f"🕒  "
+                          f"``{guild.created_at.strftime('%a, %B %d %Y, %I:%M %p UTC')}``")
         e.set_footer(text=f'Requested by {ctx.message.author}', icon_url=ctx.message.author.avatar_url)
         await ctx.send(embed=e)
 
