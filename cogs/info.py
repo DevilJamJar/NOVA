@@ -27,30 +27,32 @@ class Info(commands.Cog):
     async def userinfo(self, ctx, member: discord.Member = None):
         """See info on a member in the server"""
         status_list = {
-            "online": "<:online:726127263401246832> -  Online",
-            "offline": "<:offline:726127263203983440> -  Offline",
-            "idle": "<:idle:726127192165187594> -  Idle",
-            "dnd": "<:dnd:726127192001478746> -  Do not disturb"}
+            "online": "<:online:726127263401246832> -  ``Online``",
+            "offline": "<:offline:726127263203983440> -  ``Offline``",
+            "idle": "<:idle:726127192165187594> -  ``Idle``",
+            "dnd": "<:dnd:726127192001478746> -  ``Do not disturb``"}
         member = member or ctx.message.author
         roles = [role for role in member.roles]
+
         embed = discord.Embed(color=0x5643fd, timestamp=ctx.message.created_at)
         embed.set_author(name=f'User Info  -  {member}')
         embed.set_thumbnail(url=member.avatar_url)
         embed.set_footer(text=f'Requested by {ctx.message.author}', icon_url=ctx.message.author.avatar_url)
 
-        embed.add_field(name='ID', value=member.id, inline=False)
+        embed.add_field(name='ID:', value=f"<:author:734991429843157042> ``{member.id}``", inline=False)
 
-        embed.add_field(name='Account Created', value=member.created_at.strftime('%a, %B %d %Y, %I:%M %p UTC'),
+        embed.add_field(name='Account Created:',
+                        value=f"🕒 ``{member.created_at.strftime('%a, %B %d %Y, %I:%M %p UTC')}``",
                         inline=False)
 
-        embed.add_field(name='Joined Server', value=member.joined_at.strftime('%a, %B %d %Y, %I:%M %p UTC'),
+        embed.add_field(name='Joined Server:',
+                        value=f"<:member:731190477927219231> "
+                              f"``{member.joined_at.strftime('%a, %B %d %Y, %I:%M %p UTC')}``",
                         inline=False)
+        embed.add_field(name='Status:', value=f"{status_list[str(member.status)]}", inline=False)
 
-        embed.add_field(name='Status', value=status_list[str(member.status)], inline=False)
-
-        embed.add_field(name=f"Top Roles ({len(roles)} total)",
+        embed.add_field(name=f"Top Roles ({len(roles)} total):",
                         value=" ".join([role.mention for role in roles[::-1][:5]]), inline=False)
-
         await ctx.send(embed=embed)
 
     @commands.command(aliases=['si'], usage='')
@@ -80,24 +82,26 @@ class Info(commands.Cog):
         vc = [voice_channel for voice_channel in guild.voice_channels]
         folders = [category for category in guild.categories]
         bots = len([bot for bot in guild.members if bot.bot])
+        humans = len(guild.members) - bots
 
         e = discord.Embed(title=f'<:Discord:735530547992068146> '
                                 f'  Server Info  -  {guild.name}', color=0x5643fd, timestamp=ctx.message.created_at,
                           description=guild.description)
-        e.add_field(name='ID', value=f"<:author:734991429843157042> ``{guild.id}``", inline=False)
-        e.add_field(name='Owner', value=f"<:owner:730864906429136907>``{guild.owner}``", inline=False)
-        e.add_field(name='Region', value=f"📌 ``{r}``", inline=False)
+        e.add_field(name='ID:', value=f"<:author:734991429843157042> ``{guild.id}``", inline=False)
+        e.add_field(name='Owner:', value=f"<:owner:730864906429136907>``{guild.owner}``", inline=False)
+        e.add_field(name='Region:', value=f"📌 ``{r}``", inline=False)
         if guild.icon:
             e.set_thumbnail(url=guild.icon_url)
-        e.add_field(name='Members', value=f"<:member:731190477927219231> ``{guild.member_count}`` **•**"
-                                          f"   <:bot:703728026512392312> ``{bots}``",
+        e.add_field(name='Members:', value=f"<:member:731190477927219231> ``{guild.member_count}`` **•**"
+                                           f"   <:bot:703728026512392312> ``{bots}`` **•**"
+                                           f"   👨 ``{humans}``",
                     inline=False)
-        e.add_field(name='Roles', value=f'<:roles:734232012730138744> ``{len(roles)}``', inline=False)
-        e.add_field(name='Emojis', value=f"<:emoji:734231060069613638> ``{len(emojis)}``", inline=False)
-        e.add_field(name='Channels', value=f"<:category:716057680548200468> ``{len(folders)}`` **•** "
-                                           f"<:text_channel:703726554018086912> ``{len(channels)}`` **•** "
-                                           f"<:voice_channel:703726554068418560> ``{len(vc)}``")
-        e.add_field(name='Server Created', inline=False,
+        e.add_field(name='Roles:', value=f'<:roles:734232012730138744> ``{len(roles)}``', inline=False)
+        e.add_field(name='Emojis:', value=f"<:emoji:734231060069613638> ``{len(emojis)}``", inline=False)
+        e.add_field(name='Channels:', value=f"<:category:716057680548200468> ``{len(folders)}`` **•** "
+                                            f"<:text_channel:703726554018086912> ``{len(channels)}`` **•** "
+                                            f"<:voice_channel:703726554068418560> ``{len(vc)}``")
+        e.add_field(name='Server Created:', inline=False,
                     value=f"🕒  "
                           f"``{guild.created_at.strftime('%a, %B %d %Y, %I:%M %p UTC')}``")
         e.set_footer(text=f'Requested by {ctx.message.author}', icon_url=ctx.message.author.avatar_url)

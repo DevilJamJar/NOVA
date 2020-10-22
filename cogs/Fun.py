@@ -373,11 +373,11 @@ class Fun(commands.Cog):
                     return await ctx.send("<:redx:732660210132451369> Could not find you a person.")
                 js = await resp.json()
                 gender = js['gender'].capitalize()
-                embed = discord.Embed(title='This person does not exist.', timestamp=ctx.message.created_at,
+                embed = discord.Embed(title='This person does not exist', timestamp=ctx.message.created_at,
                                       color=0x5643fd)
                 embed.set_image(url=js['image_url'])
-                embed.add_field(name='Age', value=js['age'], inline=True)
-                embed.add_field(name='Gender', value=gender, inline=True)
+                embed.add_field(name='Age:', value=js['age'], inline=True)
+                embed.add_field(name='Gender:', value=gender, inline=True)
                 embed.set_footer(text=f"Source: {js['source']}")
                 await ctx.send(embed=embed)
 
