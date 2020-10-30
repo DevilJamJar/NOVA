@@ -33,11 +33,7 @@ class Info(commands.Cog):
             "dnd": "<:dnd:726127192001478746> -  ``Do not disturb``"}
         member = member or ctx.message.author
         roles = [role for role in member.roles]
-<<<<<<< HEAD
         servers = len([g for g in self.client.guilds if g.get_member(member.id)])
-=======
->>>>>>> e8ab6e1116db8fcd0177797a61ef1bfb8bfd6e59
-
         embed = discord.Embed(color=0x5643fd, timestamp=ctx.message.created_at)
         embed.set_author(name=f'User Info  -  {member}')
         embed.set_thumbnail(url=member.avatar_url)
@@ -48,20 +44,12 @@ class Info(commands.Cog):
         embed.add_field(name='Account Created:',
                         value=f"🕒 ``{member.created_at.strftime('%a, %B %d %Y, %I:%M %p UTC')}``",
                         inline=False)
-<<<<<<< HEAD
-=======
-
->>>>>>> e8ab6e1116db8fcd0177797a61ef1bfb8bfd6e59
         embed.add_field(name='Joined Server:',
                         value=f"<:member:731190477927219231> "
                               f"``{member.joined_at.strftime('%a, %B %d %Y, %I:%M %p UTC')}``",
                         inline=False)
         embed.add_field(name='Status:', value=f"{status_list[str(member.status)]}", inline=False)
-<<<<<<< HEAD
         embed.add_field(name='Shared Servers with NOVA:', value=f"<:wumpus:742965982640865311> ``{servers}``")
-=======
-
->>>>>>> e8ab6e1116db8fcd0177797a61ef1bfb8bfd6e59
         embed.add_field(name=f"Top Roles ({len(roles)} total):",
                         value=" ".join([role.mention for role in roles[::-1][:5]]), inline=False)
         await ctx.send(embed=embed)

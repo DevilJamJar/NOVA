@@ -154,7 +154,6 @@ class Moderation(commands.Cog):
         await ctx.send('Work in progress, stay tuned.')
 
     @commands.command()
-<<<<<<< HEAD
     @commands.bot_has_guild_permissions(manage_channels=True)
     @commands.has_permissions(manage_channels=True)
     async def pin(self, ctx, message: discord.Message):
@@ -185,16 +184,6 @@ class Moderation(commands.Cog):
             await ctx.send(f"<a:a_check:742966013930373151> The nickname for ``{member}``"
                            f" has successfully been changed to ``{nickname}``")
 
-=======
-    @commands.bot_has_guild_permissions(pin_messages=True)
-    @commands.has_permissions(pin_messages=True)
-    async def pin(self, ctx, message: discord.Message):
-        """Pin a message using an ID link."""
-        msg = Get_message(message)
-        pin_message(msg)
-        await ctx.send(f"<a:a_check:742966013930373151> A message has been pinned in <#{msg.channel.id}>.")
-
->>>>>>> e8ab6e1116db8fcd0177797a61ef1bfb8bfd6e59
 
 def setup(client):
     client.add_cog(Moderation(client))
