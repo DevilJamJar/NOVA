@@ -210,7 +210,7 @@ class Fun(commands.Cog):
         answer = answers.index(question.answer) + 1
         try:
             while True:
-                msg = await self.client.wait_for('message', timeout=15, check=lambda m: m.channel == ctx.channel)
+                msg = await self.client.wait_for('message', timeout=15, check=lambda m: m.author == ctx.message.author)
                 if str(answer) in msg.content:
                     return await ctx.send(embed=discord.Embed(description=f"{answer} was correct ({question.answer})",
                                                               color=0x32CD32, title='Correct!'))
@@ -271,22 +271,30 @@ class Fun(commands.Cog):
                     hsv = js['hsv']
                     cmyk = js['cmyk']
                     xyz = js['XYZ']
-                    embed = discord.Embed(title=f"Showing hex code ``#{code}``", color=color,
-                                          timestamp=ctx.message.created_at)
-                    embed.set_thumbnail(url=thumbnail)
-                    embed.add_field(name='Name', value=f"{name['value']}")
-                    embed.add_field(name='Exact name?', value=f"``{name['exact_match_name']}``")
-                    embed.add_field(name='Closest named hex', value=f"``{name['closest_named_hex']}``")
-                    embed.add_field(name='🔗 Image Links',
-                                    value=f"<:asset:734531316741046283> [Bare]({image['bare']})\n"
-                                          f"<:asset:734531316741046283> [Labeled]({image['named']})", inline=False)
-                    embed.add_field(name='Other Codes',
-                                    value=f"**rgb**({rgb['r']}, {rgb['g']}, {rgb['b']})\n"
-                                          f"**hsl**({hsl['h']}, {hsl['s']}, {hsl['l']})\n"
-                                          f"**hsv**({hsv['h']}, {hsv['s']}, {hsv['v']})\n"
-                                          f"**cmyk**({cmyk['c']}, {cmyk['m']}, {cmyk['y']}, {cmyk['k']})\n"
-                                          f"**XYZ**({xyz['X']}, {xyz['Y']}, {xyz['Z']})", inline=False)
-                    await ctx.send(embed=embed)
+                    try:
+                        embed = discord.Embed(title=f"Showing hex code ``#{code}``", color=color,
+                                              timestamp=ctx.message.created_at)
+                        embed.set_thumbnail(url=thumbnail)
+                        embed.add_field(name='Name', value=f"{name['value']}")
+                        embed.add_field(name='Exact name?', value=f"``{name['exact_match_name']}``")
+                        embed.add_field(name='Closest named hex', value=f"``{name['closest_named_hex']}``")
+                        embed.add_field(name='🔗 Image Links',
+                                        value=f"<:asset:734531316741046283> [Bare]({image['bare']})\n"
+                                              f"<:asset:734531316741046283> [Labeled]({image['named']})",
+                                        inline=False)
+                        embed.add_field(name='Other Codes',
+                                        value=f"**rgb**({rgb['r']}, {rgb['g']}, {rgb['b']})\n"
+                                              f"**hsl**({hsl['h']}, {hsl['s']}, {hsl['l']})\n"
+                                              f"**hsv**({hsv['h']}, {hsv['s']}, {hsv['v']})\n"
+                                              f"**cmyk**({cmyk['c']}, {cmyk['m']}, {cmyk['y']}, {cmyk['k']})\n"
+                                              f"**XYZ**({xyz['X']}, {xyz['Y']}, {xyz['Z']})", inline=False)
+                        await ctx.send(embed=embed)
+                    except ValueError:
+                        await ctx.send("<:redx:732660210132451369> "
+                                       "That is not a valid hex code, please try again with a different value.")
+                    except BaseException:
+                        await ctx.send("<:redx:732660210132451369> "
+                                       "Could not process that hex code, please try again with a different value.")
 
     @commands.command()
     @commands.cooldown(1, 59, commands.BucketType.member)
@@ -334,9 +342,9 @@ class Fun(commands.Cog):
                         return await ctx.send(embed=embed)
 
     @commands.command()
-    async def chat(self, ctx, *, message):
+    async def chat(self, ctx, *, words):
         """Chat with an AI."""
-        url = f'https://some-random-api.ml/chatbot?message={message}'
+        url = f'https://some-random-api.ml/chatbot?message={words}'
         async with aiohttp.ClientSession() as cs, ctx.typing():
             async with cs.get(url) as resp:
                 if resp.status != 200:
@@ -373,12 +381,58 @@ class Fun(commands.Cog):
                     return await ctx.send("<:redx:732660210132451369> Could not find you a person.")
                 js = await resp.json()
                 gender = js['gender'].capitalize()
-                embed = discord.Embed(title='This person does not exist.', timestamp=ctx.message.created_at,
+                embed = discord.Embed(title='This person does not exist', timestamp=ctx.message.created_at,
                                       color=0x5643fd)
                 embed.set_image(url=js['image_url'])
-                embed.add_field(name='Age', value=js['age'], inline=True)
-                embed.add_field(name='Gender', value=gender, inline=True)
+                embed.add_field(name='Age:', value=js['age'], inline=True)
+                embed.add_field(name='Gender:', value=gender, inline=True)
                 embed.set_footer(text=f"Source: {js['source']}")
+                await ctx.send(embed=embed)
+
+    @commands.command()
+    async def weather(self, ctx, *, city):
+        """Gather weather data for a given city."""
+        url = f'http://api.weatherapi.com/v1/current.json?key={weather_key}&q={city}'
+        direction_list = {
+            "N": "North",
+            "S": "South",
+            "E": "East",
+            "W": "West",
+            "NW": "Northwest",
+            "NE": "Northeast",
+            "SE": "Southeast",
+            "SW": "Southwest",
+            "NNW": "North-Northwest",
+            "NNE": "North-Northeast",
+            "WNW": "West-Northwest",
+            "ENE": "East-Northeast",
+            "WSW": "West-Southwest",
+            "ESE": "East-Southeast",
+            "SSW": "South-Southwest",
+            "SSE": "South-Southeast"}
+        async with aiohttp.ClientSession() as cs, ctx.typing():
+            async with cs.get(url) as resp:
+                if resp.status != 200:
+                    return await ctx.send(f"<:redx:732660210132451369> Could not find any weather data for ``{city}``.")
+                js = await resp.json()
+                embed = discord.Embed(color=0x5643fd, title=js['location']['name'], timestamp=ctx.message.created_at,
+                                      description=f"**Region:** {js['location']['region']}\n"
+                                                  f"**Country:** {js['location']['country']}\n"
+                                                  f"**Coordinates:** {js['location']['lat']}, {js['location']['lon']}\n"
+                                                  f"**Timezone:** {js['location']['tz_id']}\n"
+                                                  f"**Local Time:** {js['location']['localtime']}")
+                embed.set_thumbnail(url=f"https:{js['current']['condition']['icon']}")
+                embed.add_field(name='**__Weather Data:__** <:temperature:742933558221340723>☀', inline=False,
+                                value=
+                                f"**Overview:** {js['current']['condition']['text']}\n"
+                                f"**Temperature:** {js['current']['temp_c']} Celsius | "
+                                f"{js['current']['temp_f']} Fahrenheit\n"
+                                f"**Feels like:** {js['current']['feelslike_c']} Celsius | "
+                                f"{js['current']['feelslike_f']} Fahrenheit\n"
+                                f"**Wind Speed:** {js['current']['wind_kph']} kph | {js['current']['wind_mph']} mph\n"
+                                f"**Wind Direction:** {direction_list[js['current']['wind_dir']]}\n"
+                                f"**Humidity:** {js['current']['humidity']}\n"
+                                f"**Cloud Coverage:** {js['current']['cloud']}%")
                 await ctx.send(embed=embed)
 
 

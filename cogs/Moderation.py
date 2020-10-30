@@ -83,7 +83,7 @@ class Moderation(commands.Cog):
         """Use NOVA to hold an organized vote"""
         embed = discord.Embed(title=f'New Poll', color=0x5643fd, description=msg, timestamp=ctx.message.created_at)
         embed.set_thumbnail(url='https://imgur.com/ES5SD0L.png')
-        embed.set_footer(icon_url=ctx.message.author.avatar_url, text=ctx.message.author)
+        embed.set_author(name=ctx.message.author)
         message = await ctx.send(embed=embed)
         for i in ["⬆️", "⬇️"]:
             await message.add_reaction(i)
@@ -152,6 +152,37 @@ class Moderation(commands.Cog):
     async def mute(self, ctx):
         """Use this command to set up the mute command for your server."""
         await ctx.send('Work in progress, stay tuned.')
+
+    @commands.command()
+    @commands.bot_has_guild_permissions(manage_channels=True)
+    @commands.has_permissions(manage_channels=True)
+    async def pin(self, ctx, message: discord.Message):
+        """Pin a message using an ID link."""
+        msg = message
+        await msg.pin()
+        await ctx.send(f"<a:a_check:742966013930373151> A message has been pinned in <#{msg.channel.id}>.")
+
+    @commands.command()
+    @commands.bot_has_guild_permissions(manage_channels=True)
+    @commands.has_permissions(manage_channels=True)
+    async def unpin(self, ctx, message: discord.Message):
+        """Unpin a message using an ID link."""
+        msg = message
+        await msg.unpin()
+        await ctx.send(f"<a:a_check:742966013930373151> A message has been unpinned in <#{msg.channel.id}>.")
+
+    @commands.command(aliases=['nick'])
+    @commands.has_permissions(manage_messages=True)
+    @commands.bot_has_guild_permissions(manage_messages=True)
+    async def nickname(self, ctx, member: discord.Member, *, nickname=None):
+        """Change the nickname of a member."""
+        await member.edit(nick=nickname)
+        if nickname is None:
+            await ctx.send(f"<a:a_check:742966013930373151> The nickname for ``{member}``"
+                           f" has successfully been reset.")
+        else:
+            await ctx.send(f"<a:a_check:742966013930373151> The nickname for ``{member}``"
+                           f" has successfully been changed to ``{nickname}``")
 
 
 def setup(client):

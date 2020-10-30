@@ -24,6 +24,10 @@ class Reddit(commands.Cog):
                          password=reddit_password,
                          user_agent=reddit_user_agent)
 
+    errorurl = 'https://media.discordapp.net/attachments/726475732569555014/745738546660245664/vsPV_' \
+               'ipxVKfJKE3xJGvJZeX' \
+               'wrxKUqqkJGBFdIgwpWWE3X7CIJrZ6kElRSJ4Mdvw5cC7wMPYLTKFNnBBv-2K4WP344DoO6Al7RQB4.png'
+
     @commands.Cog.listener()
     async def on_ready(self):
         print('Reddit module is ready')
@@ -113,7 +117,8 @@ class Reddit(commands.Cog):
     async def meme(self, ctx):
         """Grab a meme from reddit's dankest subreddit"""
         thing = discord.Embed(title='Loading...', color=0x5643fd,
-                              description='One dank meme coming right up',
+                              description='<a:loading:743537226503421973> One dank meme coming right up '
+                                          '<a:loading:743537226503421973>',
                               timestamp=ctx.message.created_at)
         thing.set_image(url='https://i.imgur.com/gVX3yPJ.gif?noredirect')
         thing.set_footer(text=f'Requested by {ctx.message.author}', icon_url=ctx.message.author.avatar_url)
@@ -137,7 +142,8 @@ class Reddit(commands.Cog):
     async def askreddit(self, ctx):
         """Get a random askreddit thread with a comment"""
         embedd = discord.Embed(
-            colour=0x5643fd, title="Loading...", timestamp=ctx.message.created_at
+            colour=0x5643fd, title="<a:loading:743537226503421973> Loading... <a:loading:743537226503421973>",
+            timestamp=ctx.message.created_at
         )
         embedd.set_footer(text=f'Requested by {ctx.message.author}', icon_url=ctx.message.author.avatar_url)
         embedd.set_image(
@@ -176,7 +182,8 @@ class Reddit(commands.Cog):
         """Get a random post from anywhere on reddit"""
         try:
             embedd = discord.Embed(
-                colour=0x5643fd, title="Loading...", timestamp=ctx.message.created_at
+                colour=0x5643fd, title="<a:loading:743537226503421973> Loading... <a:loading:743537226503421973>",
+                timestamp=ctx.message.created_at
             )
             embedd.set_footer(text=f'Requested by {ctx.message.author}', icon_url=ctx.message.author.avatar_url)
             embedd.set_image(
@@ -217,8 +224,14 @@ class Reddit(commands.Cog):
                                         .set_image(url='https://i.kym-cdn.com/entries/icons/facebook/000/033/758/Screen'
                                                        '_Sh'
                                                    'ot_2020-04-28_at_12.21.48_PM.jpg'))
+        except NameError:
+            embed = discord.Embed(title='Error', description=
+                                  'That is not a valid subreddit. Please try again using a different name.',
+                                  color=0xFF0000, timestamp=ctx.message.created_at)
+            embed.set_thumbnail(url=self.errorurl)
+            await ctx.send(embed=embed)
         except Exception as e:
-            embed = discord.Embed(title=Error, description=e, color=0xFF0000, timestamp=ctx.message.created_at)
+            embed = discord.Embed(title='Error', description=e, color=0xFF0000, timestamp=ctx.message.created_at)
             await ctx.send(embed=embed)
 
     @commands.command()
@@ -243,6 +256,33 @@ class Reddit(commands.Cog):
         embed.add_field(name='Posts', value=len(posts), inline=True)
         embed.add_field(name='Comments', value=len(commentt), inline=True)
         embedd.set_footer(text=f'Requested by {ctx.message.author}', icon_url=ctx.message.author.avatar_url)
+        await message.edit(embed=embed)
+
+    @commands.command()
+    async def votes(self, ctx, link):
+        """See the number of upvotes on a post before two hours."""
+        thing = discord.Embed(title='Loading...', color=0x5643fd,
+                              description='<a:loading:743537226503421973> '
+                                          'Gathering stats <a:loading:743537226503421973>',
+                              timestamp=ctx.message.created_at)
+        thing.set_image(url='https://i.imgur.com/gVX3yPJ.gif?noredirect')
+        thing.set_footer(text=f'Requested by {ctx.message.author}', icon_url=ctx.message.author.avatar_url)
+        message = await ctx.send(embed=thing)
+        post = self.reddit.submission(url=link)
+        if post.is_self:
+            embed = discord.Embed(title=post.title,
+                                  colour=0x5643fd,
+                                  description=post.selftext, timestamp=ctx.message.created_at, url=link)
+            embed.add_field(name='Metrics', value=f"The linked post currently has ``{post.score}`` upvotes and "
+                                                  f"``{post.num_comments}`` comments.")
+        else:
+            embed = discord.Embed(title=post.title,
+                                  colour=0x5643fd,
+                                  timestamp=ctx.message.created_at,
+                                  description=f"The linked post currently has ``{post.score}`` upvotes and "
+                                              f"``{post.num_comments}`` comments.", url=link)
+            embed.set_image(url=post.url)
+        embed.set_author(name=f"u/{post.author.name}", icon_url=post.author.icon_img)
         await message.edit(embed=embed)
 
 

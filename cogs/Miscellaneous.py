@@ -93,8 +93,24 @@ class Miscellaneous(commands.Cog):
     @commands.command()
     async def ping(self, ctx):
         """Calculate bot latency"""
-        ping = round(self.client.latency, 2)
+        ping = round(self.client.latency, 5)
         await ctx.send(f"<a:loading:743537226503421973> ``{ping * 1000} milliseconds`` <a:loading:743537226503421973>")
+
+    @commands.command(aliases=['dev'])
+    async def developer(self, ctx):
+        embed = discord.Embed(title='Developer - YeetVegetabales', color=0x5643fd, timestamp=ctx.message.created_at,
+                              description="The developer of this bot is YeetVegetabales. He is 15 years old and"
+                                          " made NOVA in order to learn how to code. DM him on discord to get any "
+                                          "information on this bot or if you just want to chat about anything :)\n\n"
+                                          "<:Discord:735530547992068146>  -   "
+                                          "**[YeetVegetabales#5313](https://discord.gg/Uqh9NXY)**\n\n"
+                                          "<:reddit:749433072549625897>  -   **[u/YeetVegetabales]"
+                                          "(https://reddit.com/user/YeetVegetabales)**\n\n"
+                                          "<:github:734999696845832252>  -   **[YeetVegetabales]"
+                                          "(https://github.com/YeetVegetabales/)**\n\n"
+                                          "<:steamsquare512:770389717342224465>  -   **[Vendetta]("
+                                          "https://steamcommunity.com/profiles/76561199089966378)**")
+        await ctx.send(embed=embed)
 
 
 def setup(client):
