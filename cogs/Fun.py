@@ -1,10 +1,9 @@
-import discord
-import aiohttp
-import random
 import asyncio
 import io
-import json
-from secrets import *
+import random
+
+import aiohttp
+import discord
 from aiotrivia import TriviaClient, AiotriviaException
 from discord.ext import commands
 

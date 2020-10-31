@@ -1,14 +1,11 @@
-import discord
-import praw
-import random
 import datetime
+import random
+
 import aiohttp
-import asyncio
+import discord
 import humanize
-import colorthief
-from secrets import *
+import praw
 from discord.ext import commands
-from colorthief import ColorThief
 
 
 class Reddit(commands.Cog):
@@ -223,10 +220,10 @@ class Reddit(commands.Cog):
                                                             timestamp=ctx.message.created_at)
                                         .set_image(url='https://i.kym-cdn.com/entries/icons/facebook/000/033/758/Screen'
                                                        '_Sh'
-                                                   'ot_2020-04-28_at_12.21.48_PM.jpg'))
+                                                       'ot_2020-04-28_at_12.21.48_PM.jpg'))
         except NameError:
             embed = discord.Embed(title='Error', description=
-                                  'That is not a valid subreddit. Please try again using a different name.',
+            'That is not a valid subreddit. Please try again using a different name.',
                                   color=0xFF0000, timestamp=ctx.message.created_at)
             embed.set_thumbnail(url=self.errorurl)
             await ctx.send(embed=embed)

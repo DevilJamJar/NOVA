@@ -1,25 +1,22 @@
-import discord
 import os
-import json
 from secrets import token
-from discord.ext import commands, tasks
-from itertools import cycle
+
+import discord
+from discord.ext import commands
 
 prefix = ['n.', 'N.', 'n. ', 'N. ']
 intents = discord.Intents.all()
-intents.members = True
-client = commands.Bot(command_prefix=prefix, case_insensitive=True, intents=intents)
+errorurl = 'https://media.discordapp.net/attachments/726475732569555014/745738546660245664/vsPV_ipxVKfJKE3xJGvJZeX' \
+           'wrxKUqqkJGBFdIgwpWWE3X7CIJrZ6kElRSJ4Mdvw5cC7wMPYLTKFNnBBv-2K4WP344DoO6Al7RQB4.png'
+errorcolor = 0xFF0000
+
+client = commands.Bot(command_prefix=prefix, case_insensitive=True, intents=intents, activity=discord.Game('n.help'))
 client.remove_command('help')
 
 
 @client.event
 async def on_ready():
     print('NOVA is online')
-    await client.change_presence(activity=discord.Game('n.help'))
-
-errorurl = 'https://media.discordapp.net/attachments/726475732569555014/745738546660245664/vsPV_ipxVKfJKE3xJGvJZeX' \
-           'wrxKUqqkJGBFdIgwpWWE3X7CIJrZ6kElRSJ4Mdvw5cC7wMPYLTKFNnBBv-2K4WP344DoO6Al7RQB4.png'
-errorcolor = 0xFF0000
 
 
 @client.event
@@ -31,14 +28,14 @@ async def on_command_error(ctx, error):
                               color=errorcolor, timestamp=ctx.message.created_at)
         embed.set_thumbnail(url=errorurl)
         await ctx.send(embed=embed)
-        
+
     if isinstance(error, commands.MissingRequiredArgument):
         embed = discord.Embed(title='Warning!', color=errorcolor, timestamp=ctx.message.created_at,
                               description=f'{ctx.message.author.mention},  '
                                           f'``{error.param}`` is a required argument that is missing.')
         embed.set_thumbnail(url=errorurl)
         await ctx.send(embed=embed)
-        
+
     if isinstance(error, commands.NSFWChannelRequired):
         embed = discord.Embed(title='Warning!', color=errorcolor, timestamp=ctx.message.created_at,
                               description=f'{ctx.message.author.mention},  '
@@ -46,7 +43,7 @@ async def on_command_error(ctx, error):
         embed.set_image(url='https://i.kym-cdn.com/entries/icons/facebook/000/033/758/Screen_Shot_2020-04-28_at_12.21'
                             '.48_PM.jpg')
         await ctx.send(embed=embed)
-        
+
     if isinstance(error, commands.BotMissingPermissions):
         embed = discord.Embed(title='Warning!', color=errorcolor, timestamp=ctx.message.created_at,
                               description=f'{ctx.message.author.mention},  '
@@ -55,18 +52,18 @@ async def on_command_error(ctx, error):
                                           f'must be enabled in role settings.')
         embed.set_thumbnail(url=errorurl)
         await ctx.send(embed=embed)
-        
+
     if isinstance(error, commands.MissingPermissions):
         await ctx.send(f"⚠ You are not allowed to use this command. You must have ``{error.missing_perms}`` "
                        f"permissions in order to do so.")
-        
+
     if isinstance(error, commands.UserNotFound):
         embed = discord.Embed(title='Warning!', color=errorcolor, timestamp=ctx.message.created_at,
                               description=f'{ctx.message.author.mention},  '
                                           f'that user could not be found.')
         embed.set_thumbnail(url=errorurl)
         await ctx.send(embed=embed)
-        
+
     if isinstance(error, commands.CommandInvokeError):
         embed = discord.Embed(title='Warning!', color=errorcolor, timestamp=ctx.message.created_at,
                               description=f'{ctx.message.author.mention},  '
