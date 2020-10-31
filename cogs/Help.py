@@ -72,7 +72,7 @@ class Help(commands.Cog):
                                                   f"https://github.com/niztg/CyberTron5000/blob/master/cogs/info.py"
                                                   f"#L9-L109)"
                                                   f"\n\n" + "\n".join(k))
-                embed.add_field(name='Like what you see?',  inline=False,
+                embed.add_field(name='Like what you see?', inline=False,
                                 value='<:share:730823872265584680>[Invite NOVA]'
                                       '(https://discord.com/api/oauth2/authorize?client_id=709922850953494598&permis'
                                       'sions=1573252215&scope=bot)\n'
